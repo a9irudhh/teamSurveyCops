@@ -86,7 +86,6 @@ def process_name_contact():
 def process_schooling_marks():
     data = request.json
 
-    # Debugging line to print the received data
     # print(f"Received data: {data}")
 
     prompt = data.get('schooling_marks')
