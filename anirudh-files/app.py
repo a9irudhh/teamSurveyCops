@@ -46,11 +46,11 @@ model = genai.GenerativeModel(
 def format_prompt(prompt, prompt_type):
     """Format the prompt based on the type of input to ensure professional responses."""
     prompt_engineering = {
-        'overall': "Please format the following text professionally for a resume, like get the main contents and keep it simple. ",
-        'name_contact': "Please format the following name and contact details professionally for a resume: ",
-        'schooling_marks': "Organize these schooling marks and CGPA in a professional resume format: ",
-        'experience': "Present this experience detail in a polished and professional manner suitable for a resume: ",
-        'projects': "Structure these project details in a professional format appropriate for a resume: "
+        'overall': "Please format the following text professionally for a resume, like get the main contents and keep it simple.Give it in a proper json such that itll help front end ",
+        'name_contact': "Please format the following name and contact details professionally for a resume. Give it in a proper json such that itll help front end: ",
+        'schooling_marks': "Organize these schooling marks and CGPA in a professional resume format. Give it in a proper json such that itll help front end: ",
+        'experience': "Present this experience detail in a polished and professional manner suitable for a resume. Give it in a proper json such that itll help front end: ",
+        'projects': "Structure these project details in a professional format appropriate for a resume. : "
     }
     
     overall_prompt = prompt_engineering.get('overall', '')
