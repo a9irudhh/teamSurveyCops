@@ -1,6 +1,6 @@
 # SIH Team Code Base Dump
 
-This repository serves as a centralized **dump file** for the codebase used by the **SIH (Smart India Hackathon) team**. The purpose of this repository is to store and manage the various scripts, utilities, and code snippets developed during the course of the hackathon.
+This repository serves as a centralized **dump file** for the codebase used by the **teamSurveyCops**. The purpose of this repository is to store and manage the various scripts, utilities, and code snippets developed during the course of the hackathon.
 
 ## Purpose
 
