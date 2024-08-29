@@ -1,4 +1,4 @@
-import os
+import os, json
 from flask import Flask, request, jsonify
 import google.generativeai as genai
 
@@ -46,20 +46,33 @@ model = genai.GenerativeModel(
 def format_prompt(prompt, prompt_type):
     """Format the prompt based on the type of input to ensure professional responses."""
     prompt_engineering = {
-        'overall': "Please format the following text professionally for a resume, like get the main contents and keep it simple.Give it in a proper json such that itll help front end ",
-        'name_contact': "Please format the following name and contact details professionally for a resume. Give it in a proper json such that itll help front end: ",
-        'schooling_marks': "Organize these schooling marks and CGPA in a professional resume format. Give it in a proper json such that itll help front end: ",
-        'experience': "Present this experience detail in a polished and professional manner suitable for a resume. Give it in a proper json such that itll help front end: ",
-        'projects': "Structure these project details in a professional format appropriate for a resume. : "
+    'overall': "Please read the input carefully and format the following text professionally for a resume. Extract the main contents, keep the formatting simple, and structure the response as a clean JSON object without any additional labels or escape sequences. and remove '''json ''' and all dont give it in the response",
+    'name_contact': "Please format the following name and contact details professionally for a resume. Structure it clearly as a clean JSON object, without any additional labels or escape sequences:",
+    'schooling_marks': "Please organize the following education details level-wise, starting with school and then college. Include CGPAs and percentiles where applicable, and format them professionally for a resume. Return the response as a clean JSON object, without any additional labels or escape sequences:",
+    'experience': "Present the following experience details in a polished and professional manner suitable for a resume. Structure it as a clean JSON object, without any additional labels or escape sequences:",
+    'projects': "Please structure the following project details in a professional and easy-to-read format appropriate for a resume. Return the response as a clean JSON object, without any additional labels or escape sequences:",
+    'publications': "Please organize and format the following publication details in a professional manner suitable for a resume. Structure the response as a clean JSON object, without any additional labels or escape sequences:",
+    'certificates': "Please structure the following certificate details in a professional and polished format suitable for a resume. Ensure clarity and return the response as a clean JSON object, without any additional labels or escape sequences:",
+    'description': "Creatively express the individual's name and summarize their professional persona using the available data. Make it engaging and suitable for a personal description section in a resume. Structure the response as a clean JSON object, without any additional labels or escape sequences:",
     }
+
     
     overall_prompt = prompt_engineering.get('overall', '')
     specific_prompt = prompt_engineering.get(prompt_type, '')
     formatted_prompt = overall_prompt + specific_prompt + prompt
-    # print(f"Formatted Prompt: {formatted_prompt}")
 
     return formatted_prompt
 
+def preprocess(response_text):
+    try:
+        response_json = json.loads(response_text)
+        # print(response_json)
+        return response_json
+    except json.JSONDecodeError:
+        print("Error decoding JSON. The input text might be improperly formatted.")
+        return None
+    
+    
 def generate_response(prompt, prompt_type):
     """Generate a response from the model with additional formatting instructions."""
     formatted_prompt = format_prompt(prompt, prompt_type)
@@ -80,6 +93,8 @@ def process_name_contact():
         return jsonify({"error": "Missing 'name_contact' field"}), 400
 
     response_text = generate_response(prompt, 'name_contact')
+    response_text = preprocess(response_text)
+    # print(response_text)
     return jsonify({"response": response_text})
 
 @app.route('/process_schooling_marks', methods=['POST'])
@@ -93,6 +108,7 @@ def process_schooling_marks():
         return jsonify({"error": "Missing 'schooling_marks' field"}), 400
 
     response_text = generate_response(prompt, 'schooling_marks')
+    response_text = preprocess(response_text)
     return jsonify({"response": response_text})
 
 @app.route('/process_experience', methods=['POST'])
@@ -103,6 +119,7 @@ def process_experience():
         return jsonify({"error": "Missing 'experience' field"}), 400
 
     response_text = generate_response(prompt, 'experience')
+    response_text = preprocess(response_text)
     return jsonify({"response": response_text})
 
 @app.route('/process_projects', methods=['POST'])
@@ -113,6 +130,7 @@ def process_projects():
         return jsonify({"error": "Missing 'projects' field"}), 400
 
     response_text = generate_response(prompt, 'projects')
+    response_text = preprocess(response_text)
     return jsonify({"response": response_text})
 
 if __name__ == '__main__':
