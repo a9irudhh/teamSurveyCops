@@ -1,0 +1,67 @@
+{
+    "response": {
+        "email": "johndoe@example.com",
+        "linkedin": "linkedin.com/in/johndoe",
+        "name": "John Doe",
+        "phone": "(123) 456-7890"
+    }
+}
+
+
+{
+    "response": {
+        "Education": [
+            {
+                "Details": "Graduated with 92%",
+                "School": "Springfield High",
+                "Years": "2015 - 2018"
+            },
+            {
+                "Details": "Graduated with a CGPA of 8.5 out of 10",
+                "School": "Springfield University",
+                "Years": "2018 - 2022"
+            }
+        ]
+    }
+}
+
+
+{
+    "response": {
+        "experience": [
+            {
+                "company": "XYZ Corp",
+                "dates": "June 2022 - August 2022",
+                "description": "Developed web applications using Python and Flask.",
+                "title": "Software Developer Intern"
+            }
+        ]
+    }
+}
+
+
+
+{
+    "response": {
+        "projects": [
+            {
+                "description": "Developed an automated invoice classification system using BERT to categorize invoices efficiently.",
+                "skills": [
+                    "BERT",
+                    "Natural Language Processing",
+                    "Machine Learning"
+                ],
+                "title": "Automated Invoice Classification System"
+            },
+            {
+                "description": "Created an AI-powered resume builder that generates resumes using AI models.",
+                "skills": [
+                    "AI",
+                    "Natural Language Processing",
+                    "Machine Learning"
+                ],
+                "title": "AI-Powered Resume Builder"
+            }
+        ]
+    }
+}

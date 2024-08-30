@@ -1,0 +1,20 @@
+{
+  "name_contact": "My name is John Doe. My contact details are as follows: my email is johndoe@example.com, my phone number is (123) 456-7890, and here’s my LinkedIn profile: linkedin.com/in/johndoe."
+}
+
+
+
+{
+  "schooling_marks": "My schooling details are as follows: I attended Springfield High from 2015 to 2018, where I graduated with 92%. After that, I went to Springfield University from 2018 to 2022, and I graduated with a CGPA of 8.5 out of 10."
+}
+
+
+
+{
+  "experience": "My work experience includes a Software Developer Internship at XYZ Corp from June 2022 to August 2022. During this time, I worked on developing web applications using Python and Flask."
+}
+
+
+{
+  "projects": "I’ve worked on a couple of projects: First, I developed an Automated Invoice Classification system using BERT, which categorizes invoices automatically. Second, I created an AI-Powered Resume Builder that generates resumes using AI models."
+}

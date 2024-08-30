@@ -46,7 +46,7 @@ model = genai.GenerativeModel(
 def format_prompt(prompt, prompt_type):
     """Format the prompt based on the type of input to ensure professional responses."""
     prompt_engineering = {
-    'overall': "Please read the input carefully and format the following text professionally for a resume. Extract the main contents, keep the formatting simple, and structure the response as a clean JSON object without any additional labels or escape sequences. and remove '''json ''' and all dont give it in the response",
+    'overall': "Please read the input carefully and format the following text professionally for a resume. Extract the main contents, keep the formatting simple, and structure the response as a clean JSON object without any additional labels or escape sequences. and remove '''json ''' and all dont give it in the response and if you find any new fields keep it",
     'name_contact': "Please format the following name and contact details professionally for a resume. Structure it clearly as a clean JSON object, without any additional labels or escape sequences:",
     'schooling_marks': "Please organize the following education details level-wise, starting with school and then college. Include CGPAs and percentiles where applicable, and format them professionally for a resume. Return the response as a clean JSON object, without any additional labels or escape sequences:",
     'experience': "Present the following experience details in a polished and professional manner suitable for a resume. Structure it as a clean JSON object, without any additional labels or escape sequences:",
@@ -64,9 +64,9 @@ def format_prompt(prompt, prompt_type):
     return formatted_prompt
 
 def preprocess(response_text):
+    # print(response_text)
     try:
         response_json = json.loads(response_text)
-        # print(response_json)
         return response_json
     except json.JSONDecodeError:
         print("Error decoding JSON. The input text might be improperly formatted.")
