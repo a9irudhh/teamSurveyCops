@@ -1,9 +1,9 @@
 import json
-from flask import Flask, request, jsonify
+from flask import Flask, render_template, request, jsonify
 import google.generativeai as genai
+import markdown2
 
 # PLEASE DONT USE THIS KEY, CREATE YOUR OWN KEY
-# Just please dont use it
 GEMINI_KEY = "AIzaSyDIxd85HNb1VXMTTLK5u0rVcZi5hJZiWfw"
 
 genai.configure(api_key=GEMINI_KEY)
@@ -69,8 +69,8 @@ def send_chat_to_AI(message, type="prompt"):
         return response.text
 
 
-@app.route("/introudce_user", methods=["POST"])
-def introudce_user():
+@app.route("/introduce_user", methods=["POST", "GET"])
+def introduce_user():
 
     if request.method == "POST":
 
@@ -93,7 +93,6 @@ def introudce_user():
         message = f"I am currently working as a {currentOccupation} with {experience} years of experience in {presentSkills}. I am now looking to advance my career by transitioning into a role in {roleSeeking}. I am eager to apply my skills and knowledge in this new field, and I would greatly appreciate any guidance on how to navigate the job search process, network effectively, and prepare for interviews to position myself as a strong candidate."
 
         response_text = send_chat_to_AI(message)
-        response_text = preprocess(response_text)
 
         if not response_text:
             return (
@@ -106,33 +105,40 @@ def introudce_user():
                 500,
             )
         else:
-            return jsonify({"response": response_text})
+            text = markdown2.markdown(response_text)
+            return jsonify({"response": text})
+
+    return render_template("information.html")
 
 
-@app.route("/chat_with_ai", methods=["POST"])
+@app.route("/chat_with_ai", methods=["POST", "GET"])
 def chat_with_ai():
 
-    data = request.json
-    question = data.get("question")
+    if request.method == "POST":
+        data = request.json
+        question = data.get("question")
 
-    if not question:
-        return jsonify({"error": "Please provide a question"}), 400
+        if not question:
+            return jsonify({"error": "Please provide a question"}), 400
 
-    response_text = send_chat_to_AI(question, type="question")
+        response_text = send_chat_to_AI(question, type="question")
 
-    if not response_text:
-        return (
-            jsonify(
-                {
-                    "error": "No response from AI",
-                    "message": "Something went wrong, please try again later",
-                }
-            ),
-            500,
-        )
+        if not response_text:
+            return (
+                jsonify(
+                    {
+                        "error": "No response from AI",
+                        "message": "Something went wrong, please try again later",
+                    }
+                ),
+                500,
+            )
 
-    All_chats.append({"question": question, "answer": response_text})
-    return jsonify({"answer": response_text})
+        All_chats.append({"question": question, "answer": response_text})
+        text = markdown2.markdown(response_text)
+        return jsonify({"answer": text})
+
+    return render_template("chat.html")
 
 
 @app.route("/get_all_chats", methods=["GET"])
