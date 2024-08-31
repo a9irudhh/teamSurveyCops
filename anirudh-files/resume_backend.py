@@ -1,4 +1,5 @@
 import os, json
+import markdown2
 from flask import Flask, request, jsonify
 import google.generativeai as genai
 
@@ -56,7 +57,6 @@ def format_prompt(prompt, prompt_type):
     'description': "Creatively express the individual's name and summarize their professional persona using the available data. Make it engaging and suitable for a personal description section in a resume. Structure the response as a clean JSON object, without any additional labels or escape sequences:",
     }
 
-    
     overall_prompt = prompt_engineering.get('overall', '')
     specific_prompt = prompt_engineering.get(prompt_type, '')
     formatted_prompt = overall_prompt + specific_prompt + prompt
@@ -64,25 +64,30 @@ def format_prompt(prompt, prompt_type):
     return formatted_prompt
 
 def preprocess(response_text):
-    # print(response_text)
     try:
         response_json = json.loads(response_text)
         return response_json
     except json.JSONDecodeError:
         print("Error decoding JSON. The input text might be improperly formatted.")
         return None
-    
-    
+
+def convert_to_markdown(json_data):
+    """Convert JSON data into a Markdown formatted string."""
+    markdown = ""
+    for key, value in json_data.items():
+        if isinstance(value, list):
+            markdown += f"**{key.capitalize()}**:\n"
+            for item in value:
+                markdown += f"- {item}\n"
+        else:
+            markdown += f"**{key.capitalize()}**: {value}\n"
+        markdown += "\n"
+    return markdown2.markdown(markdown)
+
 def generate_response(prompt, prompt_type):
     """Generate a response from the model with additional formatting instructions."""
     formatted_prompt = format_prompt(prompt, prompt_type)
-
-    # print(f"Sending to model: {formatted_prompt}")
-
     response = model.generate_content(formatted_prompt)
-
-    # print(f"Model Response: {response.text}")
-
     return response.text
 
 @app.route('/process_name_contact', methods=['POST'])
@@ -93,23 +98,25 @@ def process_name_contact():
         return jsonify({"error": "Missing 'name_contact' field"}), 400
 
     response_text = generate_response(prompt, 'name_contact')
-    response_text = preprocess(response_text)
-    # print(response_text)
-    return jsonify({"response": response_text})
+    response_json = preprocess(response_text)
+    if response_json:
+        markdown_response = convert_to_markdown(response_json)
+        return jsonify({"response": markdown_response})
+    return jsonify({"error": "Failed to process response"}), 500
 
 @app.route('/process_schooling_marks', methods=['POST'])
 def process_schooling_marks():
     data = request.json
-
-    # print(f"Received data: {data}")
-
     prompt = data.get('schooling_marks')
     if not prompt:
         return jsonify({"error": "Missing 'schooling_marks' field"}), 400
 
     response_text = generate_response(prompt, 'schooling_marks')
-    response_text = preprocess(response_text)
-    return jsonify({"response": response_text})
+    response_json = preprocess(response_text)
+    if response_json:
+        markdown_response = convert_to_markdown(response_json)
+        return jsonify({"response": markdown_response})
+    return jsonify({"error": "Failed to process response"}), 500
 
 @app.route('/process_experience', methods=['POST'])
 def process_experience():
@@ -119,8 +126,11 @@ def process_experience():
         return jsonify({"error": "Missing 'experience' field"}), 400
 
     response_text = generate_response(prompt, 'experience')
-    response_text = preprocess(response_text)
-    return jsonify({"response": response_text})
+    response_json = preprocess(response_text)
+    if response_json:
+        markdown_response = convert_to_markdown(response_json)
+        return jsonify({"response": markdown_response})
+    return jsonify({"error": "Failed to process response"}), 500
 
 @app.route('/process_projects', methods=['POST'])
 def process_projects():
@@ -130,8 +140,11 @@ def process_projects():
         return jsonify({"error": "Missing 'projects' field"}), 400
 
     response_text = generate_response(prompt, 'projects')
-    response_text = preprocess(response_text)
-    return jsonify({"response": response_text})
+    response_json = preprocess(response_text)
+    if response_json:
+        markdown_response = convert_to_markdown(response_json)
+        return jsonify({"response": markdown_response})
+    return jsonify({"error": "Failed to process response"}), 500
 
 if __name__ == '__main__':
     app.run(debug=True)
