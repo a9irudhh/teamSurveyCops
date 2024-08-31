@@ -47,14 +47,21 @@ model = genai.GenerativeModel(
 def format_prompt(prompt, prompt_type):
     """Format the prompt based on the type of input to ensure professional responses."""
     prompt_engineering = {
-    'overall': "Please read the input carefully and format the following text professionally for a resume. Extract the main contents, keep the formatting simple, and structure the response as a clean JSON object without any additional labels or escape sequences. and remove '''json ''' and all dont give it in the response and if you find any new fields keep it",
-    'name_contact': "Please format the following name and contact details professionally for a resume. Structure it clearly as a clean JSON object, without any additional labels or escape sequences:",
-    'schooling_marks': "Please organize the following education details level-wise, starting with school and then college. Include CGPAs and percentiles where applicable, and format them professionally for a resume. Return the response as a clean JSON object, without any additional labels or escape sequences:",
-    'experience': "Present the following experience details in a polished and professional manner suitable for a resume. Structure it as a clean JSON object, without any additional labels or escape sequences:",
-    'projects': "Please structure the following project details in a professional and easy-to-read format appropriate for a resume. Return the response as a clean JSON object, without any additional labels or escape sequences:",
-    'publications': "Please organize and format the following publication details in a professional manner suitable for a resume. Structure the response as a clean JSON object, without any additional labels or escape sequences:",
-    'certificates': "Please structure the following certificate details in a professional and polished format suitable for a resume. Ensure clarity and return the response as a clean JSON object, without any additional labels or escape sequences:",
-    'description': "Creatively express the individual's name and summarize their professional persona using the available data. Make it engaging and suitable for a personal description section in a resume. Structure the response as a clean JSON object, without any additional labels or escape sequences:",
+    'overall': "Please read the input carefully and format the following text professionally for a resume. Extract the main contents, keep the formatting simple, and structure the response as a clean JSON object. Ensure that the response does not include 'json' or any additional labels or escape sequences. If you find null objects then dont generate them in the response.",
+    
+    'name_contact': "Dont add unnecessary details. Please format the following name and contact details professionally for a resume. Structure it clearly as a clean JSON object with the following keys: email, linkedin, name, phone and other cpntact details that you find. Exclude 'json' and any additional labels or escape sequences:",
+    
+    'schooling_marks': "Dont add unnecessary details. Calculate overall grade .Please organize the following education details level-wise, starting with school and then college. Include CGPAs and percentiles where applicable in new fields, and format them professionally for a resume. Structure the response as a clean JSON object with the following keys: Education. Exclude 'json' and any additional labels or escape sequences:",
+    
+    'experience': "Dont add unnecessary details. Present the following experience details in a polished and professional manner suitable for a resume. Structure it as a clean JSON object with the following keys: experience. Exclude 'json' and any additional labels or escape sequences:",
+    
+    'projects': "Dont add unnecessary details. Include techstack that has been used in the projects, if tehy are less in number think and add what are the pre requisites for it also. Please structure the following project details in a professional and easy-to-read format appropriate for a resume. Return the response as a clean JSON object with the following keys: projects. Exclude 'json' and any additional labels or escape sequences:",
+    
+    'publications': "Dont add unnecessary details. Please organize and format the following publication details in a professional manner suitable for a resume. Structure the response as a clean JSON object with the following keys: publications. Exclude 'json' and any additional labels or escape sequences:",
+    
+    'certificates': "Dont add unnecessary details. Please structure the following certificate details in a professional and polished format suitable for a resume. Ensure clarity and return the response as a clean JSON object with the following keys: certificates. Exclude 'json' and any additional labels or escape sequences:",
+    
+    'description': "Dont add unnecessary details. Creatively express the individual's name and summarize their professional persona using the available data. Make it engaging and suitable for a personal description section in a resume. Structure the response as a clean JSON object with the following keys: description. Exclude 'json' and any additional labels or escape sequences:",
     }
 
     overall_prompt = prompt_engineering.get('overall', '')
