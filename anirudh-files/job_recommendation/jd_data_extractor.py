@@ -9,6 +9,7 @@ from selenium.common.exceptions import TimeoutException, ElementClickIntercepted
 from bs4 import BeautifulSoup
 import json
 
+
 def init_driver(path):
     """Initialize the Chrome WebDriver."""
     options = webdriver.ChromeOptions()
