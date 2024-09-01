@@ -65,6 +65,7 @@ def get_job_urls(driver):
 
 def extract_job_data(urls):
     data = {}
+    print(f"Total job URLs to extract data: {len(urls)}")
     for i, url in enumerate(tqdm(urls), start=1):
         try:
             driver.get(url)
@@ -72,10 +73,17 @@ def extract_job_data(urls):
             print(f"Extracting data from URL: {url}")
             try:
                 position = driver.find_element(By.CLASS_NAME, 'heading_Level1__soLZs').text
+                print(f"Position: {position}")
+                
                 company = driver.find_element(By.CLASS_NAME, 'heading_Heading__BqX5J').text
+                print(f"Company: {company}")
+                
                 location = driver.find_element(By.CSS_SELECTOR, 'div[data-test="location"]').text
+                print(f"Location: {location}")
+                
                 job_description = driver.find_element(By.CSS_SELECTOR, 'div.JobDetails_jobDescription__uW_fK').text
-
+                print(f"Job Description: {job_description}")
+                
                 data[i] = {
                     'url': url,
                     'Position': position,
@@ -83,10 +91,11 @@ def extract_job_data(urls):
                     'Location': location,
                     'Job_Description': job_description
                     }
-            
-                print(f"Data extracted for URL: {url}")
-            # print(f"exracted data: {data[i]}")
+
+                # print(f"Data extracted for URL: {url}")
+                print(f"exracted data: {data[i]}")
             except (NoSuchElementException, IndexError):
+                print(f"Data not found for URL: {url}")
                 continue
         
         except Exception as e:
@@ -104,7 +113,7 @@ driver = open_browser(locid, key)
 
 # Get job URLs and save them to a JSON file
 urls = get_job_urls(driver)
-with open('url_software_testing_loc_noida.json', 'w') as f:
+with open('./url_software_testing_loc_noida.json', 'w') as f:
     json.dump(urls, f, indent=4)
     print("URL file created")
 
@@ -114,9 +123,9 @@ driver.quit()
 
 job_df = pd.DataFrame(job_data).transpose()
 job_df = job_df[['url', 'Position', 'Company', 'Location', 'Job_Description']]
-job_df.to_csv('jd_software_testing_bangalore.csv', index=False)
+job_df.to_csv('./jd_software_testing_noida.csv', index=False)
 print("Job data file created")
 
 # Load and display the data
-df1 = pd.read_csv("jd_software_testing_bangalore.csv")
+df1 = pd.read_csv("jd_software_testing_noida.csv")
 print(df1)
