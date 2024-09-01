@@ -67,7 +67,7 @@ def extract_job_data(urls):
     for i, url in enumerate(tqdm(urls), start=1):
         try:
             driver.get(url)
-            time.sleep(random.uniform(2, 4))  # Random delay between URL visits
+            # time.sleep(random.uniform(2, 4))  # Random delay between URL visits
             soup = BeautifulSoup(driver.page_source, "lxml")
             print(f"Extracting data from URL: {url}")
             try:
