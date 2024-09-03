@@ -90,16 +90,21 @@ def submit_data():
         jd_embeddings = get_bert_embeddings([jd_text])
         job_embeddings = get_bert_embeddings(df['Job_Description'].tolist())
         
-        # Increase the number of neighbors here
-        nbrs = NearestNeighbors(n_neighbors=10, metric='cosine').fit(job_embeddings)
+        # Number of neighbors you want to retrieve
+        num_neighbors = 20
+        
+        # Ensure the number of neighbors is valid
+        nbrs = NearestNeighbors(n_neighbors=num_neighbors, metric='cosine').fit(job_embeddings)
         _, jd_indices = nbrs.kneighbors(jd_embeddings)
         
         classified_job_index = jd_indices[0][0]
         classified_jobs = df.iloc[[classified_job_index]]
+        
+        # Ensure the number of neighbors is valid for classified jobs
+        num_classified_neighbors = min(num_neighbors, len(classified_jobs))
         classified_job_embeddings = job_embeddings[classified_job_index].unsqueeze(0)
         
-        # Increase the number of neighbors here as well
-        nbrs_classified = NearestNeighbors(n_neighbors=10, metric='cosine').fit(classified_job_embeddings)
+        nbrs_classified = NearestNeighbors(n_neighbors=num_classified_neighbors, metric='cosine').fit(classified_job_embeddings)
         distances, indices = nbrs_classified.kneighbors(resume_embeddings)
         
         similarity_scores = 1 - distances[0]
@@ -125,6 +130,7 @@ def submit_data():
             "job_list": job_list,
             "dropdown_locations": dropdown_locations
         })
+
 
 
 if __name__ == "__main__":
