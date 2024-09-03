@@ -1,36 +1,74 @@
-from flask import Flask, render_template, redirect, request
-import pandas as pd
-import re
+from flask import Flask, jsonify, request
 from transformers import BertTokenizer, BertModel
 import torch
 from sklearn.neighbors import NearestNeighbors
-from pyresparser import ResumeParser # type: ignore
-from docx import Document # type: ignore
-import nltk #type: ignore
+import PyPDF2
+import requests
+import nltk, spacy, os
+import pandas as pd
+import google.generativeai as genai
 
-
+# Initialize spacy and nltk
+nlp = spacy.load('en_core_web_sm')
 nltk.download('stopwords')
+
 # Initialize the Flask app
 app = Flask(__name__)
 
+# Configure Generative AI client
+API_KEY = 'AIzaSyC_iJ_seRtx_OtEJO6rKYuuyOv8HrcQmvo'
+genai.configure(api_key=API_KEY)
+
+# Initialize the Generative Model
+config = {
+    'temperature': 0,
+    'top_k': 20,
+    'top_p': 0.9,
+    'max_output_tokens': 500
+}
+
+safety_settings = [
+    {"category": "HARM_CATEGORY_HARASSMENT", "threshold": "BLOCK_MEDIUM_AND_ABOVE"},
+    {"category": "HARM_CATEGORY_HATE_SPEECH", "threshold": "BLOCK_MEDIUM_AND_ABOVE"},
+    {"category": "HARM_CATEGORY_SEXUALLY_EXPLICIT", "threshold": "BLOCK_MEDIUM_AND_ABOVE"},
+    {"category": "HARM_CATEGORY_DANGEROUS_CONTENT", "threshold": "BLOCK_MEDIUM_AND_ABOVE"}
+]
+
+model = genai.GenerativeModel(
+    model_name="gemini-1.5-flash",
+    generation_config=config,
+    safety_settings=safety_settings
+)
+
 # Load the job data
-df = pd.read_csv('job_final_testing.csv')
-# print("Loaded job data successfully.")
+df = pd.read_csv('job_final.csv')
 
 # Initialize BERT tokenizer and model
 tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
-model = BertModel.from_pretrained('bert-base-uncased')
-# print("BERT model and tokenizer loaded.")
+bert_model = BertModel.from_pretrained('bert-base-uncased')
 
 def get_bert_embeddings(text_list):
-    # Tokenize the text
     inputs = tokenizer(text_list, return_tensors='pt', padding=True, truncation=True, max_length=512)
     with torch.no_grad():
-        # Get the embeddings from BERT
-        outputs = model(**inputs)
-    # Return the mean of the token embeddings as the text representation
+        outputs = bert_model(**inputs)
     return outputs.last_hidden_state.mean(dim=1)
 
+def extract_text_from_pdf(pdf_path):
+    text = ""
+    with open(pdf_path, 'rb') as file:
+        reader = PyPDF2.PdfReader(file)
+        for page in reader.pages:
+            text += page.extract_text()
+    return text
+
+def get_skills_from_gemini(resume_text):
+    try:
+        prompt = f"Extract the skills from the following resume text and give them as a comma-separated list:\n\n{resume_text}"
+        response = model.generate_content(prompt)
+        return response.text
+    except Exception as e:
+        print(f"Error fetching skills from GEMINI: {e}")
+        return []
 
 @app.route('/submit', methods=['POST'])
 def submit_data():
@@ -38,60 +76,55 @@ def submit_data():
         f = request.files['userfile']
         f.save(f.filename)
         
-        jd_text = request.form.get('jd', '').strip()  # Get the JD text from the form
+        jd_text = request.form.get('jd', '').strip()
         
         try:
-            doc = Document(f.filename)
-            text = ""
-            for paragraph in doc.paragraphs:
-                text += paragraph.text + "\n"
-            
-            # Parse the resume using pyresparser
-            data = ResumeParser(f.filename).get_extracted_data()
-
+            resume_text = extract_text_from_pdf(f.filename)
+            resume_skills = get_skills_from_gemini(resume_text)
+            skills_text = ' '.join(resume_skills)
         except Exception as e:
-            print(f"Error opening document: {e}")
-            data = ResumeParser(f.filename).get_extracted_data()
-
-        resume_skills = data.get('skills', [])
-        skills_text = ' '.join(resume_skills)
+            print(f"Error processing resume: {e}")
+            skills_text = ""
         
-        # Calculate BERT embeddings for the resume and the JD
         resume_embeddings = get_bert_embeddings([skills_text])
         jd_embeddings = get_bert_embeddings([jd_text])
-        
-        # Get BERT embeddings for job descriptions
         job_embeddings = get_bert_embeddings(df['Job_Description'].tolist())
         
-        # Calculate the percentage match for each job based on cosine similarity
+        # Increase the number of neighbors here
         nbrs = NearestNeighbors(n_neighbors=10, metric='cosine').fit(job_embeddings)
-        distances, indices = nbrs.kneighbors(resume_embeddings)
+        _, jd_indices = nbrs.kneighbors(jd_embeddings)
         
-        # Calculate similarity scores and convert them to percentage
-        similarity_scores = 1 - distances[0]  # Since cosine distance is used, convert to similarity
+        classified_job_index = jd_indices[0][0]
+        classified_jobs = df.iloc[[classified_job_index]]
+        classified_job_embeddings = job_embeddings[classified_job_index].unsqueeze(0)
+        
+        # Increase the number of neighbors here as well
+        nbrs_classified = NearestNeighbors(n_neighbors=10, metric='cosine').fit(classified_job_embeddings)
+        distances, indices = nbrs_classified.kneighbors(resume_embeddings)
+        
+        similarity_scores = 1 - distances[0]
         match_percentages = similarity_scores * 100
         
-        # Create a DataFrame for the results
         matches = pd.DataFrame({
-            'Position': df['Position'].iloc[indices[0]],
-            'Company': df['Company'].iloc[indices[0]],
-            'Location': df['Location'].iloc[indices[0]],
+            'Position': classified_jobs['Position'].iloc[indices[0]],
+            'Company': classified_jobs['Company'].iloc[indices[0]],
+            'Location': classified_jobs['Location'].iloc[indices[0]],
+            'URL': classified_jobs['url'].iloc[indices[0]],
             'Match Percentage': match_percentages
         })
         
-        # Clean location data
         matches['Location'] = matches['Location'].str.replace(r'[^\x00-\x7F]', '')
         matches['Location'] = matches['Location'].str.replace("â€“", "")
         
-        # Create a sorted list of unique locations for the dropdown
         dropdown_locations = sorted(matches['Location'].unique())
-        
-        # Convert DataFrame to list of dictionaries
         job_list = matches.to_dict(orient='records')
         
-        # Render the template with job list and dropdown locations
-        return render_template('page.html', job_list=job_list, dropdown_locations=dropdown_locations)
-
+        os.remove(f.filename)
+        
+        return jsonify({
+            "job_list": job_list,
+            "dropdown_locations": dropdown_locations
+        })
 
 
 if __name__ == "__main__":
