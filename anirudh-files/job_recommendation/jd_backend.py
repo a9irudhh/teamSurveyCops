@@ -7,13 +7,16 @@ import requests
 import nltk, spacy, os
 import pandas as pd
 import google.generativeai as genai
+from flask_cors import CORS
 
 # Initialize spacy and nltk
 nlp = spacy.load('en_core_web_sm')
 nltk.download('stopwords')
 
+
 # Initialize the Flask app
 app = Flask(__name__)
+CORS(app)  # Enable CORS
 
 # Configure Generative AI client
 API_KEY = 'AIzaSyC_iJ_seRtx_OtEJO6rKYuuyOv8HrcQmvo'
