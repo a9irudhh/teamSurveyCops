@@ -69,7 +69,7 @@ vectorizer = TfidfVectorizer(min_df=1, analyzer=ngrams, lowercase=False)
 job_embeddings = vectorizer.fit_transform(df['processed_text'].values)
 
 # Initialize the KNN classifier
-knn = KNeighborsClassifier(n_neighbors=5, metric='cosine')
+knn = KNeighborsClassifier(n_neighbors=10, metric='cosine')
 knn.fit(job_embeddings, df['Position'])
 
 def get_skills_from_gemini(resume_text):
@@ -114,7 +114,7 @@ def submit_data():
         # Predict the most relevant job positions using KNN
         predicted_position = knn.predict(jd_embeddings)
 
-        # Retrieve the top 5 matches based on the Job Description
+        # Retrieve the top 10 matches based on the Job Description
         distances, jd_indices = knn.kneighbors(jd_embeddings)
 
         # Extract the matched jobs
@@ -135,12 +135,14 @@ def submit_data():
         matches['Location'] = matches['Location'].str.replace("â€“", "")
 
         dropdown_locations = sorted(matches['Location'].unique())
+        dropdown_position = sorted(matches['Position'].unique())
         job_list = matches.to_dict(orient='records')
 
         os.remove(f.filename)
 
         return jsonify({
             "job_list": job_list,
+            "dropdown_position": dropdown_position,
             "dropdown_locations": dropdown_locations
         })
 
