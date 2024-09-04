@@ -1,0 +1,159 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+
+/* * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: white;
+    padding: 20px;
+}
+
+/* Header Styles */
+/* header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 20px 100px;
+    background: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 99;
+} */ 
+
+header h1 {
+    color: white;
+    font-size: 2em;
+}
+
+/* Forum Container */
+.forum-container  {
+    width: 600px;
+    background:transparent;
+    border: 2px solid black;
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 0 30px black;
+    margin-top: 130px;
+    backdrop-filter: blur(20px);
+    position:relative;
+    
+}
+
+/* Form for Adding a Topic */
+
+.add-topic-form {
+  margin-bottom: 40px;
+}
+
+.add-topic-form h1 {
+  font-size: 2em;
+  color: black;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.add-topic-form label {
+  font-size: 1.6em;
+  color: black;
+  font-weight: 500;
+  display: block; /* Ensure labels are block elements */
+  margin-bottom: 5px; /* Space between label and input */
+}
+
+.add-topic-form input[type="text"] {
+  width: 100%; /* Full width to align with labels */
+  max-width: 500px; /* Adjust as needed */
+  padding: 10px;
+  margin: 10px 0;
+  border: 2px solid black;
+  border-radius: 10px;
+  outline: none;
+  background: transparent;
+}
+
+.add-topic-form button {
+  width: 100%;
+  max-width: 200px; /* Adjust as needed */
+  padding: 10px;
+  background: black;
+  color: white;
+  border: none;
+  border-radius: 15px;
+  font-size: 1.1em;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.5s;
+  margin-top: 20px; /* Space above the button */
+}
+
+.add-topic-form button:hover {
+  background-color: rgb(155, 227, 155);
+  color: black;
+}
+
+/* Topics List */
+.topics-list h2 {
+  margin-top: 20px;
+  font-size:40px;
+  color:rgb(2, 59, 5);
+}
+
+.topic-item {
+  display: flex;
+  justify-content: left;
+  align-items: left;
+  padding: 15px;
+  font-size: 30px;
+  border-bottom: 0.5px solid black; /* Optional: add border for separation */
+}
+
+.topic-item svg {
+  margin-right: 15px;
+}
+
+.topic-item p {
+  flex-grow: 1;
+  font-size: 1.1em;
+  color: black;
+}
+
+.topic-item a {
+  text-decoration: none;
+  color:rgb(42, 1, 46);
+  font-weight: 600;
+  transition: color 0.3s;
+}
+
+.topic-item a:hover {
+  color: solid black;
+}
+
+.topic-item small {
+  display: block;
+  color: grey;
+  margin-top: 5px;
+}
+
+.search-container {
+  margin: 20px;
+}
+
+.search-input {
+  width: 100%; /* Full width to align with other elements */
+  max-width: 500px; /* Adjust as needed */
+  padding: 10px;
+  border: 2px solid black;
+  border-radius: 5px;
+  font-size: 16px;
+  background: transparent;
+}
