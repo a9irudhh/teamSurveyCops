@@ -89,7 +89,7 @@ def extract_text_from_pdf(pdf_path):
         for page in reader.pages:
             text += page.extract_text()
    
-    print(f"Extracted text from PDF: {text}")
+    # print(f"Extracted text from PDF: {text}")
     return text
 
 @app.route('/submit', methods=['POST'])
@@ -101,45 +101,63 @@ def submit_data():
         jd_text = request.form.get('jd', '').strip()
 
         try:
+            # Extract resume text from the uploaded PDF
             resume_text = extract_text_from_pdf(f.filename)
+            # Get the skills from the resume using GEMINI API
             skills_list = get_skills_from_gemini(resume_text)
             skills_text = ' '.join([skill.strip() for skill in skills_list])
         except Exception as e:
             print(f"Error processing resume: {e}")
             skills_text = ""
 
+        # Generate embeddings for the resume text and JD text
         resume_embeddings = vectorizer.transform([skills_text])
         jd_embeddings = vectorizer.transform([jd_text])
 
-        # Predict the most relevant job positions using KNN
-        predicted_position = knn.predict(jd_embeddings)
+        # Predict the most relevant job positions using KNN (based on JD)
+        distances_jd, jd_indices = knn.kneighbors(jd_embeddings)
 
-        # Retrieve the top 10 matches based on the Job Description
-        distances, jd_indices = knn.kneighbors(jd_embeddings)
+        # Predict the most relevant job positions using KNN (based on resume)
+        distances_resume, resume_indices = knn.kneighbors(resume_embeddings)
 
-        # Extract the matched jobs
-        classified_jobs = df.iloc[jd_indices[0]]
+        # Ensure both JD and resume are matching with the same jobs (top 10 neighbors for both)
+        jd_top_matches = df.iloc[jd_indices[0]]
+        resume_top_matches = df.iloc[resume_indices[0]]
 
-        similarity_scores = 1 - distances[0]
-        match_percentages = similarity_scores * 100
+        # Calculate combined distance by averaging the JD and resume distances
+        aggregated_distances = distances_resume[0]
 
+        # Convert aggregated distances into similarity scores (1 - distance)
+        aggregated_similarity_scores = 1 - aggregated_distances
+
+        # Calculate match percentages based on aggregated similarity scores
+        match_percentages = aggregated_similarity_scores * 100
+
+        # Create a DataFrame for the final matches
         matches = pd.DataFrame({
-            'Position': classified_jobs['Position'],
-            'Company': classified_jobs['Company'],
-            'Location': classified_jobs['Location'],
-            'URL': classified_jobs['url'],
-            'Match Percentage': match_percentages
+            'Position': jd_top_matches['Position'],
+            'Company': jd_top_matches['Company'],
+            'Location': jd_top_matches['Location'],
+            'URL': jd_top_matches['url'],
+            'Aggregated Match Percentage': match_percentages
         })
 
+        # Clean up any unwanted characters in the location
         matches['Location'] = matches['Location'].str.replace(r'[^\x00-\x7F]', '', regex=True)
         matches['Location'] = matches['Location'].str.replace("â€“", "")
 
+        # Extract unique values before modifying the DataFrame
         dropdown_locations = sorted(matches['Location'].unique())
         dropdown_position = sorted(matches['Position'].unique())
+        
+        # remove redundant values in the matches dataframe
+        matches = matches.drop_duplicates(subset=['Position', 'Company', 'Location', "URL"])
         job_list = matches.to_dict(orient='records')
 
+        # Remove the uploaded file after processing
         os.remove(f.filename)
 
+        # Return the response
         return jsonify({
             "job_list": job_list,
             "dropdown_position": dropdown_position,
