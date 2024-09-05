@@ -1,0 +1,113 @@
+.dashboard {
+  font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.dashboard-header {
+  background-color: #282c34;
+  padding: 20px;
+  color: white;
+  text-align: center;
+}
+
+.dashboard-container {
+  display: flex;
+  flex: 1;
+  padding: 20px;
+  flex-wrap: wrap;
+}
+
+/* Hide the dropdown by default on desktop view */
+.dashboard-dropdown {
+  display: none;
+  margin-bottom: 20px;
+}
+
+/* Show cards by default */
+.dashboard-nav {
+  display: flex;
+  flex-direction: column;
+  width: 25%;
+  padding-right: 20px;
+}
+
+.dashboard-nav .card {
+  background: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  margin: 10px 0;
+  padding: 15px;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.3s;
+  width: 180px;
+  font-size: 14px;
+}
+
+.dashboard-nav .card:hover {
+  transform: scale(1.05);
+}
+
+.dashboard-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
+}
+
+.dashboard-content img {
+  max-width: 100%;
+  height: auto;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.error {
+  color: red;
+  font-size: 18px;
+  margin-top: 20px;
+}
+
+/* Responsive styles for mobile view */
+@media (max-width: 768px) {
+  .dashboard-container {
+    flex-direction: column;
+  }
+
+  .dashboard-nav {
+    display: none; /* Hide cards in mobile view */
+  }
+
+  /* Show the dropdown in mobile view */
+  .dashboard-dropdown {
+    display: block;
+    width: 100%;
+    text-align: center;
+  }
+
+  .dashboard-content {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-header {
+    font-size: 18px;
+    padding: 15px;
+  }
+
+  .dashboard-dropdown select {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+  }
+
+  .error {
+    font-size: 16px;
+  }
+}
+
