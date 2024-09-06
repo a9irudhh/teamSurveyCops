@@ -1,0 +1,142 @@
+
+
+
+/* Back Button */
+.topic-container button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background: black;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.topic-container button:hover {
+    background-color: rgb(155, 227, 155);
+    color: black;
+}
+
+/* Topic Container */
+.topic-container {
+    width: 800px;
+    background:transparent;
+    border: 2px solid black;
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 0 30px black;
+    margin-top: 40px;
+    backdrop-filter: blur(20px);
+    position:relative;
+    
+}
+
+/* Topic Details */
+.topic-container h1 {
+    font-size: 2.5em;
+    color: black;
+    margin-bottom: 10px;
+}
+
+.topic-container p {
+    font-size: 1.3em;
+    color: black;
+    margin-bottom: 15px;
+}
+
+.topic-container small {
+    display: block;
+    color: grey;
+    margin-bottom: 10px;
+}
+
+/* Comment Section */
+.comment-item {
+    background:rgb(30, 47, 42);
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+    box-shadow: 0 0 5px #aaa;
+    display: flex;
+    align-items: flex-start;
+}
+
+.comments-section h2{
+    padding:30px;
+    align-items: center;
+
+}
+.comment-item svg {
+    margin-right: 15px;
+    display: center;
+}
+
+.comment-item p {
+    flex-grow: 1;
+    font-size: 1.1em;
+    color: rgb(246, 243, 243);
+}
+
+.comment-item button.like-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    font-size: 1.2em;
+    color:white;
+}
+
+.comment-item button.like-button svg {
+    margin-right: 5px;
+}
+
+.comment-item button.like-button:hover {
+    color: rgb(155, 227, 155);
+}
+
+.comment-item small {
+    display: block;
+    color: grey;
+    margin-bottom: 5px;
+}
+
+/* Add Comment Form */
+.add-comment-form  {
+    margin-top: 20px;
+}
+
+.add-comment-form  div {
+    margin-bottom: 15px;
+}
+
+.add-comment-form  label {
+    font-size: 1.2em;
+    color: black;
+}
+
+.add-comment-form  input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid black;
+    border-radius: 5px;
+    outline: none;
+    background: white;
+}
+
+.add-comment-form  button {
+    padding: 10px;
+    background: black;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.2em;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.add-comment-form  button:hover {
+    background-color: rgb(155, 227, 155);
+    color: black;
+}

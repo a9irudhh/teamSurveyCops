@@ -1,0 +1,131 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+.home-body {
+    display: flex;
+    justify-content:start;
+    align-items: center;
+    min-height: 100vh;
+    min-width: 225vh; /* Ensures the container takes up the full viewport height */
+    background-color:transparent; /* Background color */
+    background-size: cover; /* Ensures the background image covers the entire container */
+    background-position: center; /* Centers the background image */
+    /* Prevents repeating the background image */
+    background:url(homebackground1.jpg);
+}
+
+header {
+    width: 200%;
+    background: transparent;
+    
+}
+
+.navigation1 {
+    width: 100%;
+    padding: 20px;
+    background:transparent;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 99;
+}
+
+.navigation1 a {
+    position: relative;
+    font-size: 25px;
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    margin-left: 40px;
+}
+
+.btnlogin1 {
+    width: 150px;
+    height: 50px;
+    background: transparent;
+    border: 2px solid white;
+    border-radius: 25px;
+    color: white;
+    font-size: 20px;
+    font-weight: 500;
+    margin-left: 40px;
+    cursor: pointer;
+    transition: 0.5s;
+    outline: none;
+}
+
+.btnlogin1:hover {
+    background-color: white;
+    color: black;
+}
+
+.navigation1 a::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 3px;
+    left: 0;
+    bottom: -6px;
+    background: white;
+    border-radius: 5px;
+    transform-origin: right;
+    transform: scaleX(0);
+    transition: transform 0.5s;
+}
+
+.navigation1 a:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+}
+
+.home-main {
+    width: 1200px;
+    height:500px;
+    margin:auto;
+    color:white;
+    position:relative;
+    animation: fadeInScale 3s ease-in-out ;
+
+}
+
+.home-main .par{
+    padding-left: 20px;
+    padding-top:10px;
+    padding-bottom: 25px;
+    font-family: Arial ;
+    letter-spacing:1.2px;
+    line-height:30px;
+}
+.home-main h1{
+    font-family:'Times New Roman' ;
+    font-size:50px;
+    padding-left:20px;
+    margin-top:9%;
+    letter-spacing:2px;
+}
+@keyframes fadeInScale {
+    0% {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+    50% {
+      opacity: 0.5;
+      transform: scale(1);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1.2);
+    }
+  }
+  
+  
+  

@@ -1,0 +1,89 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    min-width: 200vh;
+    background:url(homebackground4.jpg.png) no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+
+.navigation {
+    position: relative;
+    width: 100%;
+    padding: 20px;
+    background: black;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 99;
+    gap:100%;
+}
+
+.navigation .L1{
+    position: relative;
+    font-size: 20px;
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    margin-left: 40px;
+}
+
+.btnlogin {
+    width: 150px;
+    height: 50px;
+    background: transparent;
+    border: 2px solid white;
+    border-radius: 25px;
+    color: white;
+    font-size: 20px;
+    font-weight: 500;
+    margin-left: 40px;
+    cursor: pointer;
+    transition: 0.5s;
+    outline: none;
+}
+
+.btnlogin:hover {
+    background-color: white;
+    color: black;
+}
+
+.navigation a::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 3px;
+    left: 0;
+    bottom: -6px;
+    background: white;
+    border-radius: 5px;
+    transform-origin: right;
+    transform: scaleX(0);
+    transition: transform 0.5s;
+}
+
+.navigation a:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+}
+
+main {
+    margin-top: 80px; /* Adjust based on the height of the fixed navigation */
+    width: 100%;
+    text-align: center;
+}
