@@ -1,5 +1,0 @@
-pip install flask
-pip install flask-cors
-pip install google-generativeai
-pip install markdown2
-python3 app.py
